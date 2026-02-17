@@ -4,6 +4,7 @@ FROM debian:13-slim
 
 ARG JAVA_VERSION
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -30,7 +31,8 @@ RUN source "${SDKMAN_DIR}/bin/sdkman-init.sh" \
 
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
-ENV PATH="/home/claude/.local/bin:${PATH}"
+ENV JAVA_HOME="${SDKMAN_DIR}/candidates/java/current"
+ENV PATH="/home/claude/.local/bin:${JAVA_HOME}/bin:${PATH}"
 
 ENTRYPOINT ["claude"]
 

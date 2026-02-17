@@ -1,4 +1,8 @@
+ARG JAVA_VERSION="21.0.10.fx-zulu"
+
 FROM debian:13-slim
+
+ARG JAVA_VERSION
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -19,10 +23,10 @@ WORKDIR /home/claude
 SHELL ["/bin/bash", "-lc"]
 ENV SDKMAN_DIR="/home/claude/.sdkman"
 
-RUN curl -sSL "https://get.sdkman.io" | bash
+RUN curl -fsSL "https://get.sdkman.io" | bash
 RUN source "${SDKMAN_DIR}/bin/sdkman-init.sh" \
     && sdk version \
-    && sdk install java 21.0.10.fx-zulu
+    && sdk install java "${JAVA_VERSION}"
 
 RUN curl -fsSL https://claude.ai/install.sh | bash
 

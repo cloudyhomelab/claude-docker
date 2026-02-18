@@ -10,9 +10,14 @@ group "default" {
   targets = ["all-java-versions"]
 }
 
-target "all-java-versions" {
-  context    = "."
+target "base-installer" {
+  context = "."
   dockerfile = "Dockerfile"
+  target = "base-installer"
+}
+
+target "all-java-versions" {
+  inherits = ["base-installer"]
 
   labels = {
     "org.opencontainers.image.title" = title
@@ -42,8 +47,7 @@ target "all-java-versions" {
 }
 
 target "multi-arch" {
-  context    = "."
-  dockerfile = "Dockerfile"
+  inherits = ["base-installer"]
 
   labels = {
     "org.opencontainers.image.title" = title

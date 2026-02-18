@@ -47,11 +47,12 @@ jobs:
         uses: sigstore/cosign-installer@v4.0.0
 
       - name: sign published image(s) (keyless)
-        env:
-          BAKE_METADATA: ${{ steps.bake.outputs.metadata }}
         run: |
           set -euo pipefail
-          echo "${BAKE_METADATA}" > bake-metadata.json
+
+          cat > bake-metadata.json <<'JSON'
+          ${{ steps.bake.outputs.metadata }}
+          JSON
 
           # Extract tag@digest refs from Bake metadata and sign them.
           jq -r '
@@ -64,7 +65,7 @@ jobs:
                 | map(gsub("^\\s+|\\s+$"; ""))
                 | map(select(length>0))
                 | .[]
-                | "\(. )@\($digest)"
+                | "\(.)@\($digest)"
               end
           ' bake-metadata.json | sort -u | while read -r ref; do
             echo "Signing ${ref}"

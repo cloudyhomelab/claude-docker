@@ -26,7 +26,7 @@ RUN curl -s "https://get.sdkman.io?ci=true&rcupdate=false" | bash
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
 
-FROM installer
+FROM base-installer
 ARG JAVA_VERSION
 
 RUN source "${SDKMAN_DIR}/bin/sdkman-init.sh" \

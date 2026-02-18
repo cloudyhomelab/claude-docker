@@ -1,29 +1,43 @@
 variable "REGISTRY" { default = "docker.io" }
 variable "NAMESPACE"  { default = "binarycodes" }
 variable "IMAGE_NAME" { default = "claude-local" }
-variable "IMAGE_VERSION" { default = "0.0.1" }
 
 group "default" {
-  targets = ["image"]
+  targets = ["all-java-versions"]
 }
 
-target "image" {
+target "all-java-versions" {
   context    = "."
   dockerfile = "Dockerfile"
 
   labels = {
     "org.opencontainers.image.title" = "claude-local"
     "org.opencontainers.image.description" = "Docker container to run claude workloads"
-    "org.opencontainers.image.version" = IMAGE_VERSION
+    "org.opencontainers.image.version" = "jdk-${item.major}"
+  }
+
+  matrix = {
+    item = [
+      { major = "25", version = "25.0.2.fx-zulu" },
+      { major = "21", version = "21.0.10.fx-zulu" },
+      { major = "17", version = "17.0.18.fx-zulu" },
+      { major = "11", version = "11.0.30.fx-zulu" },
+      { major = "8",  version = "8.0.482.fx-zulu" },
+    ]
+  }
+
+  name="jdk-${item.major}"
+
+  args = {
+    JAVA_VERSION = item.version
   }
 
   tags = [
-    "${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${IMAGE_VERSION}",
-    "${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:latest",
+    "${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:jdk-${item.major}",
   ]
 }
 
-target "image-all" {
-  inherits = ["image"]
+target "multi-arch" {
+  inherits = ["all-java-versions"]
   platforms = ["linux/amd64", "linux/arm64"]
 }

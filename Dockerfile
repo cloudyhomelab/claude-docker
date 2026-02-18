@@ -21,10 +21,10 @@ RUN useradd -m -s /bin/bash claude
 USER claude
 WORKDIR /home/claude
 
-SHELL ["/bin/bash", "-lc"]
+SHELL ["/bin/bash", "-c"]
 ENV SDKMAN_DIR="/home/claude/.sdkman"
 
-RUN curl -fsSL "https://get.sdkman.io" | bash
+RUN curl -s "https://get.sdkman.io?ci=true&rcupdate=false" | bash
 RUN source "${SDKMAN_DIR}/bin/sdkman-init.sh" \
     && sdk version \
     && sdk install java "${JAVA_VERSION}"
@@ -35,4 +35,3 @@ ENV JAVA_HOME="${SDKMAN_DIR}/candidates/java/current"
 ENV PATH="/home/claude/.local/bin:${JAVA_HOME}/bin:${PATH}"
 
 ENTRYPOINT ["claude"]
-

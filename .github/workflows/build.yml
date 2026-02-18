@@ -37,7 +37,7 @@ jobs:
         id: bake
         uses: docker/bake-action@v6
         with:
-          targets: image-all
+          targets: multi-arch
           push: true
           set: |
             *.attest=type=provenance,mode=max

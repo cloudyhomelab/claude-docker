@@ -24,7 +24,7 @@ RUN curl -fsSL "https://claude.ai/install.sh" | bash
 
 
 
-FROM base-installer
+FROM base-installer AS final
 ARG JAVA_VERSION
 
 USER claude

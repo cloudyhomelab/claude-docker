@@ -19,19 +19,18 @@ RUN useradd -m -s /bin/bash claude
 USER claude
 WORKDIR /home/claude
 
-SHELL ["/bin/bash", "-c"]
-ENV SDKMAN_DIR="/home/claude/.sdkman"
+RUN curl -fsSL "https://get.sdkman.io?ci=true&rcupdate=false" | bash
+RUN curl -fsSL "https://claude.ai/install.sh" | bash
 
-RUN curl -s "https://get.sdkman.io?ci=true&rcupdate=false" | bash
-RUN curl -fsSL https://claude.ai/install.sh | bash
 
 
 FROM base-installer
 ARG JAVA_VERSION
 
-RUN source "${SDKMAN_DIR}/bin/sdkman-init.sh" \
-    && sdk version \
-    && sdk install java "${JAVA_VERSION}"
+USER claude
+
+ENV SDKMAN_DIR="/home/claude/.sdkman"
+RUN bash -c 'source "${SDKMAN_DIR}/bin/sdkman-init.sh" && sdk install java "${JAVA_VERSION}"'
 
 ENV JAVA_HOME="${SDKMAN_DIR}/candidates/java/current"
 ENV PATH="/home/claude/.local/bin:${JAVA_HOME}/bin:${PATH}"

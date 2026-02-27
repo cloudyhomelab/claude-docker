@@ -1,0 +1,36 @@
+name: update claude version
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
+
+jobs:
+  claude-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: update claude version
+        run: |
+          ./.github/scripts/check-claude-update.sh
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: create pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: bump claude version"
+          title: "chore: bump claude version"
+          body: |
+            automated update of claude version.
+          branch: chore/claude-version-bump
+          delete-branch: true

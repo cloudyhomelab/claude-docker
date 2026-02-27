@@ -29,4 +29,3 @@ jobs:
           body: |
             automated update of claude version.
           branch: chore/claude-version-bump
-          delete-branch: true

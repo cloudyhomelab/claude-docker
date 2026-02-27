@@ -1,6 +1,8 @@
-ARG JAVA_VERSION="21.0.10.fx-zulu"
+ARG CLAUDE_VERSION="unknown"
+ARG JAVA_VERSION="unknown"
 
 FROM debian:13-slim AS base-installer
+ARG CLAUDE_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
@@ -20,7 +22,7 @@ USER claude
 WORKDIR /home/claude
 
 RUN curl -fsSL "https://get.sdkman.io?ci=true&rcupdate=false" | bash
-RUN curl -fsSL "https://claude.ai/install.sh" | bash
+RUN curl -fsSL "https://claude.ai/install.sh" | bash -s "${CLAUDE_VERSION}"
 
 
 

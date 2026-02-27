@@ -1,10 +1,7 @@
 variable "REGISTRY" { default = "docker.io" }
 variable "NAMESPACE"  { default = "binarycodes" }
 variable "IMAGE_NAME" { default = "claude-local" }
-
-variable "title" { default = "claude-local" }
-variable "description" { default = "Docker container to run claude workloads" }
-
+variable "CLAUDE_VERSION" { default = "2.1.45" }
 
 group "default" {
   targets = ["all-java-versions"]
@@ -14,6 +11,16 @@ target "base-installer" {
   context = "."
   dockerfile = "Dockerfile"
   target = "base-installer"
+
+  args = {
+    CLAUDE_VERSION = CLAUDE_VERSION
+  }
+
+  labels = {
+    "org.opencontainers.image.title" = "claude-local"
+    "org.opencontainers.image.description" = "Docker container to run claude workloads"
+    "com.anthropic.claude.version" = CLAUDE_VERSION
+  }
 }
 
 target "all-java-versions" {
@@ -21,8 +28,6 @@ target "all-java-versions" {
   target = "final"
 
   labels = {
-    "org.opencontainers.image.title" = title
-    "org.opencontainers.image.description" = description
     "org.opencontainers.image.version" = "jdk-${item.major}"
   }
 
@@ -53,8 +58,6 @@ target "multi-arch" {
   target = "final"
 
   labels = {
-    "org.opencontainers.image.title" = title
-    "org.opencontainers.image.description" = description
     "org.opencontainers.image.version" = "jdk-${item.major}"
   }
 

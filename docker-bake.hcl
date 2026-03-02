@@ -19,7 +19,7 @@ target "base-installer" {
   labels = {
     "org.opencontainers.image.title" = "claude-local"
     "org.opencontainers.image.description" = "Docker container to run claude workloads"
-    "com.anthropic.claude.version" = CLAUDE_VERSION
+    "net.cloudyhome.claude.version" = CLAUDE_VERSION
   }
 }
 

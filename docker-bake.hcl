@@ -1,7 +1,7 @@
 variable "REGISTRY" { default = "docker.io" }
 variable "NAMESPACE"  { default = "binarycodes" }
 variable "IMAGE_NAME" { default = "claude-local" }
-variable "CLAUDE_VERSION" { default = "2.1.66" }
+variable "CLAUDE_VERSION" { default = "2.1.69" }
 
 group "default" {
   targets = ["all-java-versions"]

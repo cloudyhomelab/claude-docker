@@ -7,14 +7,15 @@ ARG CLAUDE_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        git \
-        bash \
-        terminfo \
-        ncurses-term \
-        unzip \
-        zip \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    ncurses-term \
+    ripgrep \
+    terminfo \
+    unzip \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -s /bin/bash claude

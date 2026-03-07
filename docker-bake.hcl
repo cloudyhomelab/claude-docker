@@ -1,15 +1,22 @@
 variable "REGISTRY" { default = "docker.io" }
 variable "NAMESPACE"  { default = "binarycodes" }
-variable "IMAGE_NAME" { default = "claude-local" }
+
 variable "CLAUDE_VERSION" { default = "2.1.71" }
+variable "CODEX_VERSION" { default = "0.111.0" }
+variable "GEMINI_VERSION" { default = "0.32.1" }
+
 variable "LOCAL" { default = false }
 
 target "common" {
   labels = {
     "org.opencontainers.image.title"       = "claude-local"
     "org.opencontainers.image.description" = "Docker container to run claude workloads"
-    "net.cloudyhome.claude.version"        = CLAUDE_VERSION
   }
+
+  args = {
+    COMMON_PACKAGES="bash ca-certificates curl git make ncurses-term python3 ripgrep terminfo unzip zip"
+  }
+
   platforms = LOCAL ? [] : ["linux/amd64", "linux/arm64"]
 }
 
@@ -24,16 +31,26 @@ target "python" {
 
   args = {
     CLAUDE_VERSION = CLAUDE_VERSION
+    CODEX_VERSION = CODEX_VERSION
+    GEMINI_VERSION = GEMINI_VERSION
+    EXTRA_PACKAGES = "python3 python3-pip python3-venv"
   }
 
-  tags = ["${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:python"]
+  matrix = {
+    agent = ["claude", "codex", "gemini"]
+  }
+
+  name="${agent}-python"
+
+  target = agent
+  tags = ["${REGISTRY}/${NAMESPACE}/${agent}-local:python"]
 }
 
 target "java-base" {
   inherits = ["common"]
   context = "."
   dockerfile = "Dockerfile.java"
-  target = "base-installer"
+  target = "base"
 
   args = {
     CLAUDE_VERSION = CLAUDE_VERSION
@@ -42,13 +59,13 @@ target "java-base" {
 
 target "all-java-versions" {
   inherits = ["java-base"]
-  target = "final"
 
   labels = {
     "org.opencontainers.image.version" = "jdk-${item.major}"
   }
 
   matrix = {
+    agent = ["claude", "codex", "gemini"]
     item = [
       { major = "25", version = "25.0.2.fx-zulu", extra_tags = ["latest"] },
       { major = "21", version = "21.0.10.fx-zulu", extra_tags = ["lts"] },
@@ -58,15 +75,18 @@ target "all-java-versions" {
     ]
   }
 
-  name="jdk-${item.major}"
+  name="${agent}-jdk-${item.major}"
 
   args = {
+    CLAUDE_VERSION = CLAUDE_VERSION
+    CODEX_VERSION = CODEX_VERSION
+    GEMINI_VERSION = GEMINI_VERSION
     JAVA_VERSION = item.version
   }
 
+  target = agent
   tags = concat(
-    ["${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:jdk-${item.major}"],
-    [for t in item.extra_tags : "${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${t}"]
+    ["${REGISTRY}/${NAMESPACE}/${agent}-local:jdk-${item.major}"],
+    [for t in item.extra_tags : "${REGISTRY}/${NAMESPACE}/${agent}-local:${t}"]
     )
 }
-

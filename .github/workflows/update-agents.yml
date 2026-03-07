@@ -1,4 +1,4 @@
-name: update claude version
+name: update agent versions
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  claude-update:
+  agent-update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -19,16 +19,18 @@ jobs:
       - name: checkout repository
         uses: actions/checkout@v4
 
-      - name: update claude version
+      - name: update agent versions
         run: |
           ./.github/scripts/check-claude-update.sh
+          ./.github/scripts/check-codex-update.sh
+          ./.github/scripts/check-gemini-update.sh
 
       - name: create pr
         uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true
-          commit-message: "chore: bump claude version"
-          title: "chore: bump claude version"
+          commit-message: "chore: bump agent versions"
+          title: "chore: bump agent versions"
           body: |
-            automated update of claude version.
-          branch: chore/claude-version-bump
+            automated update of agent versions.
+          branch: chore/bump-agent-versions

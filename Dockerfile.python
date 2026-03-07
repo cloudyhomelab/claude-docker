@@ -1,31 +1,61 @@
-ARG CLAUDE_VERSION="unknown"
-
-FROM debian:13-slim
 ARG CLAUDE_VERSION
+ARG CODEX_VERSION
+ARG GEMINI_VERSION
+ARG COMMON_PACKAGES
+ARG EXTRA_PACKAGES=""
+
+
+#====================
+# base layer
+#====================
+FROM debian:13-slim AS base
+ARG COMMON_PACKAGES
+ARG EXTRA_PACKAGES
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    bash \
-    ca-certificates \
-    curl \
-    git \
-    ncurses-term \
-    python3 \
-    python3-pip \
-    python3-venv \
-    ripgrep \
-    terminfo \
-    unzip \
-    zip \
+    && apt-get install -y --no-install-recommends nodejs npm ${COMMON_PACKAGES} ${EXTRA_PACKAGES} \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m -s /bin/bash claude
-USER claude
-WORKDIR /home/claude
+RUN useradd -m -s /bin/bash agent
+USER agent
+WORKDIR /home/agent
 
+
+#====================
+# claude
+#====================
+FROM base AS claude
+ARG CLAUDE_VERSION
+
+USER agent
 RUN curl -fsSL "https://claude.ai/install.sh" | bash -s "${CLAUDE_VERSION}"
 
-ENV PATH="/home/claude/.local/bin:${PATH}"
-
+ENV PATH="/home/agent/.local/bin:${PATH}"
 ENTRYPOINT ["claude"]
+
+
+#====================
+# codex
+#====================
+FROM base AS codex
+ARG CODEX_VERSION
+
+USER root
+RUN npm install -g @openai/codex@"${CODEX_VERSION}"
+
+USER agent
+ENTRYPOINT ["codex"]
+
+
+#====================
+# gemini
+#====================
+FROM base AS gemini
+ARG GEMINI_VERSION
+
+USER root
+RUN npm install -g @google/gemini-cli@"${GEMINI_VERSION}"
+
+USER agent
+ENTRYPOINT ["gemini"]

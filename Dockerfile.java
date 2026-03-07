@@ -62,10 +62,11 @@ ENTRYPOINT ["claude"]
 FROM jdk AS codex
 ARG CODEX_VERSION
 
-USER root
+USER agent
+ENV NPM_CONFIG_PREFIX=/home/agent/.npm-global
+ENV PATH="/home/agent/.npm-global/bin:${PATH}"
 RUN npm install -g @openai/codex@"${CODEX_VERSION}"
 
-USER agent
 ENTRYPOINT ["codex"]
 
 
@@ -75,8 +76,9 @@ ENTRYPOINT ["codex"]
 FROM jdk AS gemini
 ARG GEMINI_VERSION
 
-USER root
+USER agent
+ENV NPM_CONFIG_PREFIX=/home/agent/.npm-global
+ENV PATH="/home/agent/.npm-global/bin:${PATH}"
 RUN npm install -g @google/gemini-cli@"${GEMINI_VERSION}"
 
-USER agent
 ENTRYPOINT ["gemini"]

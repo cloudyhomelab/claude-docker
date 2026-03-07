@@ -51,10 +51,6 @@ target "java-base" {
   context = "."
   dockerfile = "Dockerfile.java"
   target = "base"
-
-  args = {
-    CLAUDE_VERSION = CLAUDE_VERSION
-  }
 }
 
 target "all-java-versions" {

@@ -17,8 +17,8 @@ echo "current version - $CURRENT_VERSION ... latest version - $LATEST_VERSION"
 if [[ "${CURRENT_VERSION}" == "${LATEST_VERSION}" ]]; then
   echo "No update found"
 else
-  awk -v cur="${CURRENT_VERSION}" -v ver="${LATEST_VERSION}" '
-    $0 ~ /^variable "CLAUDE_VERSION"/ && $0 ~ "\"" cur "\"" {
+  awk -v var="${CLAUDE_VERSION_VAR_NAME}" -v cur="${CURRENT_VERSION}" -v ver="${LATEST_VERSION}" '
+    $0 ~ "^variable \"" var "\"" && $0 ~ "\"" cur "\"" {
       sub("default *= *\"" cur "\"", "default = \"" ver "\"")
     }
     { print }

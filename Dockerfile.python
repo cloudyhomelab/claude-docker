@@ -1,0 +1,31 @@
+ARG CLAUDE_VERSION="unknown"
+
+FROM debian:13-slim
+ARG CLAUDE_VERSION
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    bash \
+    ca-certificates \
+    curl \
+    git \
+    ncurses-term \
+    python3 \
+    python3-pip \
+    python3-venv \
+    ripgrep \
+    terminfo \
+    unzip \
+    zip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -s /bin/bash claude
+USER claude
+WORKDIR /home/claude
+
+RUN curl -fsSL "https://claude.ai/install.sh" | bash -s "${CLAUDE_VERSION}"
+
+ENV PATH="/home/claude/.local/bin:${PATH}"
+
+ENTRYPOINT ["claude"]

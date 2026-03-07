@@ -11,7 +11,6 @@ RUN apt-get update \
     ca-certificates \
     curl \
     git \
-    maven \
     ncurses-term \
     python3 \
     ripgrep \
@@ -35,7 +34,9 @@ ARG JAVA_VERSION
 USER claude
 
 ENV SDKMAN_DIR="/home/claude/.sdkman"
-RUN bash -c 'source "${SDKMAN_DIR}/bin/sdkman-init.sh" && sdk install java "${JAVA_VERSION}"'
+RUN bash -c 'source "${SDKMAN_DIR}/bin/sdkman-init.sh" \
+    && sdk install java "${JAVA_VERSION}" \
+    && sdk install maven'
 
 ENV JAVA_HOME="${SDKMAN_DIR}/candidates/java/current"
 ENV PATH="/home/claude/.local/bin:${JAVA_HOME}/bin:${PATH}"

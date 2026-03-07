@@ -7,6 +7,11 @@ variable "GEMINI_VERSION" { default = "0.32.1" }
 
 variable "LOCAL" { default = false }
 
+variable "BUILD_AGENTS" {
+  type    = list(string)
+  default = ["claude", "codex", "gemini"]
+}
+
 target "common" {
   labels = {
     "org.opencontainers.image.title"       = "claude-local"
@@ -37,7 +42,7 @@ target "python" {
   }
 
   matrix = {
-    agent = ["claude", "codex", "gemini"]
+    agent = BUILD_AGENTS
   }
 
   name="${agent}-python"
@@ -61,7 +66,7 @@ target "all-java-versions" {
   }
 
   matrix = {
-    agent = ["claude", "codex", "gemini"]
+    agent = BUILD_AGENTS
     item = [
       { major = "25", version = "25.0.2.fx-zulu", extra_tags = ["jdk-latest"] },
       { major = "21", version = "21.0.10.fx-zulu", extra_tags = ["jdk-lts"] },

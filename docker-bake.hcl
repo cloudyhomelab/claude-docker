@@ -19,7 +19,7 @@ target "common" {
   }
 
   args = {
-    COMMON_PACKAGES="bash ca-certificates curl git make ncurses-term python3 ripgrep terminfo unzip zip"
+    COMMON_PACKAGES="bash ca-certificates curl git make ncurses-term python3 ripgrep shellcheck terminfo unzip zip"
   }
 
   platforms = LOCAL ? [] : ["linux/amd64", "linux/arm64"]

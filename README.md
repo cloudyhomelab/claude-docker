@@ -27,15 +27,24 @@ Each agent has the following tagged image variants:
 
 ## Quick Start
 
-Run the CLI directly:
+### Run the CLI directly:
 
+#### Claude
 ```bash
-docker run --rm -it docker.io/binarycodes/codex-local:python --help
-docker run --rm -it docker.io/binarycodes/gemini-local:python --help
-docker run --rm -it docker.io/binarycodes/claude-local:python --help
+docker run --rm -it docker.io/binarycodes/claude-local:python
 ```
 
-Run with your current project mounted:
+#### Codex
+```bash
+docker run --rm -it docker.io/binarycodes/codex-local:python
+```
+
+#### Gemini
+```bash
+docker run --rm -it docker.io/binarycodes/gemini-local:python
+```
+
+### Run with your current project mounted:
 
 ```bash
 docker run --rm -it \
@@ -47,10 +56,11 @@ docker run --rm -it \
 Use a Java variant:
 
 ```bash
-docker run --rm -it docker.io/binarycodes/codex-local:jdk-lts --version
+docker run --rm -it docker.io/binarycodes/codex-local:jdk-lts
 ```
 
-Shell helper function (add to your shell rc file such as `~/.bashrc` or `~/.zshrc`):
+### Shell helper function
+Add to your shell rc file such as `~/.bashrc` or `~/.zshrc`
 
 ```bash
 agent() {
@@ -58,7 +68,11 @@ agent() {
 	local tool="$1"
 	local variant="$2"
 	local project_path="$3"
-	docker run --pull always --rm -it -v "${tool}_home:/home/agent" -v "${project_path}:/workspace" -w /workspace "docker.io/binarycodes/${tool}-local:${variant}"
+	docker run --pull always --rm -it \
+	-v "${tool}_home:/home/agent" \
+	-v "${project_path}:/workspace" \
+	-w /workspace \
+	"docker.io/binarycodes/${tool}-local:${variant}"
 }
 ```
 

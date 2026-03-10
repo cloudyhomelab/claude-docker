@@ -63,6 +63,8 @@ jobs:
           targets: default
           push: true
           set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
             *.attest=type=provenance,mode=max
             *.attest=type=sbom
 

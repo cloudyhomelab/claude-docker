@@ -39,7 +39,8 @@ RUN bash -c 'source "${SDKMAN_DIR}/bin/sdkman-init.sh" \
     && sdk install maven'
 
 ENV JAVA_HOME="${SDKMAN_DIR}/candidates/java/current"
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
+ENV M2_HOME="${SDKMAN_DIR}/candidates/maven/current"
+ENV PATH="${JAVA_HOME}/bin:${M2_HOME}/bin:${PATH}"
 
 
 #====================
